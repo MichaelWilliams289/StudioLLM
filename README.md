@@ -34,11 +34,10 @@ Then run the script with this command:
 streamlit run app.py
 ```
 
-Step 3:
 After the steps above, Streamlit will start a local server and provide you with a URL at:
 
 ```
 http://localhost:8501
 ```
 
-Open the URL, and have fun!
+Step 3: Open the URL, and have fun!
