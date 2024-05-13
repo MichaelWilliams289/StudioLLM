@@ -4,7 +4,9 @@ Sure! Below is a markdown guide on how to run a Streamlit project, along with th
 Guide to Running a Streamlit Project
 Step 1: Install Streamlit
 Before running a Streamlit project, you need to have Streamlit installed. You can install it via pip:
-'''pip install streamlit'''
+```
+pip install streamlit
+```
 
 bash
 Copy code
