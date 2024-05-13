@@ -11,6 +11,8 @@ Then install Streamlit using the following command in VScode:
 pip install streamlit
 ```
 Step 2: Running the script
+
+TODO
 def main():
     st.title("My Streamlit App")
     user_input = st.text_input("Enter your name:")
