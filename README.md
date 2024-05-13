@@ -3,7 +3,7 @@ Step 1: Install the prerequisites
 
 For this project, it is recommended to use Visual Studio Code.
 
-you will also need Python 3.10+
+You will also need Python 3.10+
 
 Then install Streamlit using the following command in VSCode:
 
@@ -22,7 +22,7 @@ Then extract the file to your computer.
 
 Then open the script using VSCode, and open the terminal
 
-type the following command:
+Type the following command:
 
 ```
 cd StudioLLM-main
@@ -41,4 +41,4 @@ After the steps above, Streamlit will start a local server and provide you with 
 http://localhost:8501
 ```
 
-open the URL, and have fun!
+Open the URL, and have fun!
