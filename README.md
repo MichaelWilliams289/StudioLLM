@@ -15,6 +15,7 @@ Step 2: Create a Streamlit Application
 Create a Python script for your Streamlit application. This script will contain your application code.
 
 Step 3: Write Your Streamlit Application Code
+
 Here's a simple example of a Streamlit application that displays a title and a text input:
 
 python
