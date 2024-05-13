@@ -5,12 +5,12 @@ For this project, it is recommended to use Visual Studio Code.
 
 You will also need Python 3.10+
 
-Then install Streamlit using the following command in VSCode:
+Then install Streamlit using the following command in the VSCode terminal:
 
 ```
 pip install streamlit
 ```
-Then install Replicate using this command in VSCode:
+Then install Replicate using this command in the VSCode terminal:
 ```
 pip install replicate
 ```
@@ -20,9 +20,9 @@ Download the script from this Repository using the "code" button.
 
 Then extract the file to your computer.
 
-Then open the script using VSCode, and open the terminal
+Then open the script using VSCode, and open the VSCode terminal
 
-Type the following command:
+Type the following command into the terminal:
 
 ```
 cd StudioLLM-main
