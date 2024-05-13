@@ -1,38 +1,44 @@
-# app.py
-Step 1: Install prerequisites
+# Install:
+Step 1: Install the prerequisites
 
-For this project, it is recommended to use VSCode.
+For this project, it is recommended to use Visual Studio Code.
 
 you will also need Python 3.10+
 
-Then install Streamlit using the following command in VScode:
+Then install Streamlit using the following command in VSCode:
 
 ```
 pip install streamlit
 ```
+Then install Replicate using this command in VSCode:
+```
+pip install replicate
+```
 Step 2: Running the script
 
-TODO
-def main():
-    st.title("My Streamlit App")
-    user_input = st.text_input("Enter your name:")
-    st.write(f"Hello, {user_input}!")
+Download the script from this Repository using the "code" button.
 
-if __name__ == "__main__":
-    main()
-Step 4: Run Your Streamlit Application
-To run your Streamlit application, navigate to the directory containing your Python script (app.py in this example) in your terminal or command prompt, and then run the following command:
+Then extract the file to your computer.
 
+Then open the script using VSCode, and open the terminal
+
+type the following command:
+
+```
+cd StudioLLM-main
+```
+
+Then run the script with this command:
+
+```
 streamlit run app.py
-Step 5: View Your Streamlit Application
-After running the above command, Streamlit will start a local server and provide you with a URL (usually http://localhost:8501) where you can view your Streamlit application in your web browser.
+```
 
-Conclusion
-Congratulations! You've successfully created and run a simple Streamlit application. You can now customize your Streamlit application further by adding more components, styling, and functionality as needed.
+Step 3:
+After the steps above, Streamlit will start a local server and provide you with a URL at:
 
-Feel free to explore the Streamlit documentation for more advanced features and examples.
+```
+http://localhost:8501
+```
 
-
-
-
-
+open the URL, and have fun!
