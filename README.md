@@ -16,7 +16,7 @@ pip install replicate
 ```
 Step 2: Running the script
 
-Download the script from this Repository using the "code" button.
+Download the script from this Repository using the "Code" button.
 
 Then extract the file to your computer.
 
