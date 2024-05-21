@@ -4,7 +4,9 @@ Step 1: Install the prerequisites
 For this project, you will need:
 
 [Python 3.10 or higher](https://www.python.org/downloads/)
+
 [VS Code](https://code.visualstudio.com/download)
+
 [Ollama](https://ollama.com/download)
 
 Then install Streamlit using the following command in the terminal:
