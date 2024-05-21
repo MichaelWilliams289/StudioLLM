@@ -1,59 +1,43 @@
 import streamlit as st
 
-
 import os
 import time
-
 
 #userprompt
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
 
-
 #vectorDB
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings.ollama import OllamaEmbeddings
-
 
 #llms
 from langchain_community.llms import Ollama
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks.manager import CallbackManager
 
-
 #pdf loader
 from langchain_community.document_loaders import PyPDFLoader
-
 
 #pdf processing
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-
 #retrieval
 from langchain.chains import RetrievalQA
-
 
 if not os.path.exists('pdfFiles'):
    os.makedirs('pdfFiles')
 
-
 if not os.path.exists('vectorDB'):
    os.makedirs('vectorDB')
-
-
-
 
 if 'template' not in st.session_state:
    st.session_state.template = """You are a knowledgeable chatbot, here to help with questions of the user. Your tone should be professional and informative.
 
-
    Context: {context}
    History: {history}
-
-
    User: {question}
    Chatbot:"""
-
 
 if 'prompt' not in st.session_state:
    st.session_state.prompt = PromptTemplate(
@@ -61,14 +45,12 @@ if 'prompt' not in st.session_state:
        template=st.session_state.template,
    )
 
-
 if 'memory' not in st.session_state:
    st.session_state.memory = ConversationBufferMemory(
        memory_key="history",
        return_messages=True,
        input_key="question",
    )
-
 
 if 'vectorstore' not in st.session_state:
    st.session_state.vectorstore = Chroma(persist_directory='vectorDb',
@@ -98,7 +80,6 @@ for message in st.session_state.chat_history:
    with st.chat_message(message["role"]):
        st.markdown(message["message"])
 
-
 if uploaded_file is not None:
    st.text("File uploaded successfully")
    if not os.path.exists('pdfFiles/' + uploaded_file.name):
@@ -107,11 +88,8 @@ if uploaded_file is not None:
            f = open('pdfFiles/' + uploaded_file.name, 'wb')
            f.write(bytes_data)
            f.close()
-
-
            loader = PyPDFLoader('pdfFiles/' + uploaded_file.name)
            data = loader.load()
-
 
            text_splitter = RecursiveCharacterTextSplitter(
                chunk_size=1500,
@@ -119,21 +97,16 @@ if uploaded_file is not None:
                length_function=len
            )
 
-
            all_splits = text_splitter.split_documents(data)
-
 
            st.session_state.vectorstore = Chroma.from_documents(
                documents = all_splits,
                embedding = OllamaEmbeddings(model = "llama2")
            )
 
-
            st.session_state.vectorstore.persist()
 
-
    st.session_state.retriever = st.session_state.vectorstore.as_retriever()
-
 
    if 'qa_chain' not in st.session_state:
        st.session_state.qa_chain = RetrievalQA.from_chain_type(
@@ -148,13 +121,11 @@ if uploaded_file is not None:
            }
        )
 
-
    if user_input := st.chat_input("You:", key="user_input"):
        user_message = {"role": "user", "message": user_input}
        st.session_state.chat_history.append(user_message)
        with st.chat_message("user"):
            st.markdown(user_input)
-
 
        with st.chat_message("assistant"):
            with st.spinner("Assistant is typing..."):
@@ -168,12 +139,9 @@ if uploaded_file is not None:
                message_placeholder.markdown(full_response + "▌")
            message_placeholder.markdown(full_response)
 
-
        chatbot_message = {"role": "assistant", "message": response['result']}
        st.session_state.chat_history.append(chatbot_message)
 
-
 else:
    st.write("Please upload a PDF file to start the chatbot")
-
-
+   
