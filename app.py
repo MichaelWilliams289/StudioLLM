@@ -1,5 +1,4 @@
 import streamlit as st
-
 import os
 import time
 
@@ -27,7 +26,7 @@ from langchain.chains import RetrievalQA
 
 if not os.path.exists('pdfFiles'):
    os.makedirs('pdfFiles')
-
+   
 if not os.path.exists('vectorDB'):
    os.makedirs('vectorDB')
 
@@ -55,7 +54,7 @@ if 'memory' not in st.session_state:
 if 'vectorstore' not in st.session_state:
    st.session_state.vectorstore = Chroma(persist_directory='vectorDb',
                                            embedding_function=OllamaEmbeddings(base_url='http://localhost:11434',
-                                           model="llama2")
+                                           model="llama3")
                                            )
   
 if 'llm' not in st.session_state:
@@ -69,12 +68,8 @@ if 'llm' not in st.session_state:
 if 'chat_history' not in st.session_state:
    st.session_state.chat_history = []
 
-
 st.title("Chatbot - to talk to PDFs")
-
-
 uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
-
 
 for message in st.session_state.chat_history:
    with st.chat_message(message["role"]):
@@ -98,7 +93,6 @@ if uploaded_file is not None:
            )
 
            all_splits = text_splitter.split_documents(data)
-
            st.session_state.vectorstore = Chroma.from_documents(
                documents = all_splits,
                embedding = OllamaEmbeddings(model = "llama2")
@@ -144,4 +138,3 @@ if uploaded_file is not None:
 
 else:
    st.write("Please upload a PDF file to start the chatbot")
-   
