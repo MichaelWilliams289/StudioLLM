@@ -1,11 +1,13 @@
 # Install:
 Step 1: Install the prerequisites
 
-For this project, it is recommended to use Visual Studio Code.
+For this project, you will need:
 
-You will also need [Python 3.10 or higher](https://www.python.org/downloads/)
+[Python 3.10 or higher](https://www.python.org/downloads/)
+[VS Code](https://code.visualstudio.com/download)
+[Ollama](https://ollama.com/download)
 
-Then install Streamlit using the following command in the VSCode terminal:
+Then install Streamlit using the following command in the terminal:
 
 ```
 pip install streamlit langchain
@@ -19,22 +21,19 @@ Then extract the file to your computer.
 
 Then open the script using VSCode, and open the VSCode terminal
 
-Type the following command into the terminal:
+Type the following commands into the terminal:
 
 ```
 cd StudioLLM-main
-```
-
-Then run the script with this command:
-
-```
+venv
+ollama run llama3
 streamlit run app.py
 ```
 
 After the steps above, Streamlit will start a local server and provide you with a URL at:
 
 ```
-http://localhost:8501
+http://localhost:11434
 ```
 
 Step 3: Open the URL, and have fun!
