@@ -59,7 +59,7 @@ if 'vectorstore' not in st.session_state:
   
 if 'llm' not in st.session_state:
    st.session_state.llm = Ollama(base_url="http://localhost:11434",
-                                 model="llama2",
+                                 model="llama3",
                                  verbose=True,
                                  callback_manager=CallbackManager(
                                      [StreamingStdOutCallbackHandler()]),
@@ -95,7 +95,7 @@ if uploaded_file is not None:
            all_splits = text_splitter.split_documents(data)
            st.session_state.vectorstore = Chroma.from_documents(
                documents = all_splits,
-               embedding = OllamaEmbeddings(model = "llama2")
+               embedding = OllamaEmbeddings(model = "llama3")
            )
 
            st.session_state.vectorstore.persist()
