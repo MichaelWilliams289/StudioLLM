@@ -3,17 +3,14 @@ Step 1: Install the prerequisites
 
 For this project, it is recommended to use Visual Studio Code.
 
-You will also need Python 3.10+
+You will also need [Python 3.10 or higher](https://www.python.org/downloads/)
 
 Then install Streamlit using the following command in the VSCode terminal:
 
 ```
-pip install streamlit
+pip install streamlit langchain
 ```
-Then install Replicate using this command in the VSCode terminal:
-```
-pip install replicate
-```
+
 Step 2: Running the script
 
 Download the script from this Repository using the "Code" button.
