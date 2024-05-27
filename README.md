@@ -27,7 +27,7 @@ Type the following commands into the terminal:
 
 ```
 cd StudioLLM-main
-venv
+python -m venv venv
 ollama run llama3
 streamlit run app.py
 ```
