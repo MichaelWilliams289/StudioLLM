@@ -1,140 +1,77 @@
 import streamlit as st
+import replicate
 import os
-import time
 
-#userprompt
-from langchain.prompts import PromptTemplate
-from langchain.memory import ConversationBufferMemory
+# App title
+st.set_page_config(page_title="Llama 3 Chatbot")
 
-#vectorDB
-from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings.ollama import OllamaEmbeddings
+# Replicate Credentials
+with st.sidebar:
+    st.title('Llama 3 Chatbot')
+    st.write('This chatbot is created using the open-source Llama 3 LLM model from Meta.')
+    if 'REPLICATE_API_TOKEN' in st.secrets:
+        st.success('API key already provided!', icon='✅')
+        replicate_api = st.secrets['REPLICATE_API_TOKEN']
+    else:
+        replicate_api = st.text_input('Enter Replicate API token:', type='password')
+        if not (replicate_api.startswith('r8_') and len(replicate_api)==40):
+            st.warning('Please enter your credentials!', icon='⚠️')
+        else:
+            st.success('Proceed to entering your prompt message!', icon='👉')
+    os.environ['REPLICATE_API_TOKEN'] = replicate_api
 
-#llms
-from langchain_community.llms import Ollama
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
-from langchain.callbacks.manager import CallbackManager
+    st.subheader('Models and parameters')
+    selected_model = st.sidebar.selectbox('Choose a Llama 3 model', ['meta-llama-3-8b-instruct', 'meta-llama-3-8b'], key='selected_model')
+    if selected_model == 'meta-llama-3-8b-instruct':
+        llm = 'meta/meta-llama-3-8b-instruct'
+    elif selected_model == 'meta-llama-3-8b':
+        llm = 'meta/meta-llama-3-8b'
+    temperature = st.sidebar.slider('temperature', min_value=0.01, max_value=1.0, value=0.1, step=0.01)
+    top_p = st.sidebar.slider('top_p', min_value=0.01, max_value=1.0, value=0.9, step=0.01)
+    max_length = st.sidebar.slider('max_length', min_value=32, max_value=128, value=120, step=8)
 
-#pdf loader
-from langchain_community.document_loaders import PyPDFLoader
+# Store LLM generated responses
+if "messages" not in st.session_state.keys():
+    st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
 
-#pdf processing
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+# Display or clear chat messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.write(message["content"])
 
-#retrieval
-from langchain.chains import RetrievalQA
+def clear_chat_history():
+    st.session_state.messages = [{"role": "assistant", "content": "How may I assist you today?"}]
+st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 
-if not os.path.exists('pdfFiles'):
-   os.makedirs('pdfFiles')
-   
-if not os.path.exists('vectorDB'):
-   os.makedirs('vectorDB')
+# Function for generating LLaMA3 response. Refactored from https://github.com/a16z-infra/llama3-chatbot
+def generate_llama3_response(prompt_input):
+    string_dialogue = "You are a helpful assistant. You do not respond as 'User' or pretend to be 'User'. You only respond once as 'Assistant'."
+    for dict_message in st.session_state.messages:
+        if dict_message["role"] == "user":
+            string_dialogue += "User: " + dict_message["content"] + "\n\n"
+        else:
+            string_dialogue += "Assistant: " + dict_message["content"] + "\n\n"
+    output = replicate.run(f'meta/{selected_model}', 
+                           input={"prompt": f"{string_dialogue} {prompt_input} Assistant: ",
+                                  "temperature":temperature, "top_p":top_p, "max_length":max_length, "repetition_penalty":1})
+    return output
 
-if 'template' not in st.session_state:
-   st.session_state.template = """You are a knowledgeable chatbot, here to help with questions of the user. Your tone should be professional and informative.
+# User-provided prompt
+if prompt := st.chat_input(disabled=not replicate_api):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.write(prompt)
 
-   Context: {context}
-   History: {history}
-   User: {question}
-   Chatbot:"""
-
-if 'prompt' not in st.session_state:
-   st.session_state.prompt = PromptTemplate(
-       input_variables=["history", "context", "question"],
-       template=st.session_state.template,
-   )
-
-if 'memory' not in st.session_state:
-   st.session_state.memory = ConversationBufferMemory(
-       memory_key="history",
-       return_messages=True,
-       input_key="question",
-   )
-
-if 'vectorstore' not in st.session_state:
-   st.session_state.vectorstore = Chroma(persist_directory='vectorDb',
-                                           embedding_function=OllamaEmbeddings(base_url='http://localhost:11434',
-                                           model="llama3")
-                                           )
-  
-if 'llm' not in st.session_state:
-   st.session_state.llm = Ollama(base_url="http://localhost:11434",
-                                 model="llama3",
-                                 verbose=True,
-                                 callback_manager=CallbackManager(
-                                     [StreamingStdOutCallbackHandler()]),
-                                 )
-  
-if 'chat_history' not in st.session_state:
-   st.session_state.chat_history = []
-
-st.title("Chatbot - to talk to PDFs")
-uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
-
-for message in st.session_state.chat_history:
-   with st.chat_message(message["role"]):
-       st.markdown(message["message"])
-
-if uploaded_file is not None:
-   st.text("File uploaded successfully")
-   if not os.path.exists('pdfFiles/' + uploaded_file.name):
-       with st.status("Saving file..."):
-           bytes_data = uploaded_file.read()
-           f = open('pdfFiles/' + uploaded_file.name, 'wb')
-           f.write(bytes_data)
-           f.close()
-           loader = PyPDFLoader('pdfFiles/' + uploaded_file.name)
-           data = loader.load()
-
-           text_splitter = RecursiveCharacterTextSplitter(
-               chunk_size=1500,
-               chunk_overlap=200,
-               length_function=len
-           )
-
-           all_splits = text_splitter.split_documents(data)
-           st.session_state.vectorstore = Chroma.from_documents(
-               documents = all_splits,
-               embedding = OllamaEmbeddings(model = "llama3")
-           )
-
-           st.session_state.vectorstore.persist()
-
-   st.session_state.retriever = st.session_state.vectorstore.as_retriever()
-
-   if 'qa_chain' not in st.session_state:
-       st.session_state.qa_chain = RetrievalQA.from_chain_type(
-           llm=st.session_state.llm,
-           chain_type='stuff',
-           retriever=st.session_state.retriever,
-           verbose=True,
-           chain_type_kwargs={
-               "verbose": True,
-               "prompt": st.session_state.prompt,
-               "memory": st.session_state.memory,
-           }
-       )
-
-   if user_input := st.chat_input("You:", key="user_input"):
-       user_message = {"role": "user", "message": user_input}
-       st.session_state.chat_history.append(user_message)
-       with st.chat_message("user"):
-           st.markdown(user_input)
-
-       with st.chat_message("assistant"):
-           with st.spinner("Assistant is typing..."):
-               response = st.session_state.qa_chain(user_input)
-           message_placeholder = st.empty()
-           full_response = ""
-           for chunk in response['result'].split():
-               full_response += chunk + " "
-               time.sleep(0.05)
-               # Add a blinking cursor to simulate typing
-               message_placeholder.markdown(full_response + "▌")
-           message_placeholder.markdown(full_response)
-
-       chatbot_message = {"role": "assistant", "message": response['result']}
-       st.session_state.chat_history.append(chatbot_message)
-
-else:
-   st.write("Please upload a PDF file to start the chatbot")
+# Generate a new response if last message is not from assistant
+if st.session_state.messages[-1]["role"] != "assistant":
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            response = generate_llama3_response(prompt)
+            placeholder = st.empty()
+            full_response = ''
+            for item in response:
+                full_response += item
+                placeholder.markdown(full_response)
+            placeholder.markdown(full_response)
+    message = {"role": "assistant", "content": full_response}
+    st.session_state.messages.append(message)
