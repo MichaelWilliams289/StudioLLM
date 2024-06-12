@@ -1,41 +1,35 @@
-# Install:
-Step 1: Install the prerequisites
+# Llama 2 Chat
 
-For this project, you will need:
+This chatbot is created using the open-source Llama 2 LLM model from Meta.
 
-[Python 3.10 or higher](https://www.python.org/downloads/)
+Particularly, we're using the [**Llama2-7B**](https://replicate.com/a16z-infra/llama7b-v2-chat) model deployed by the Andreessen Horowitz (a16z) team and hosted on the [Replicate](https://replicate.com/) platform.
 
-[VS Code](https://code.visualstudio.com/download)
+This app was made from [a16z's implementation](https://github.com/a16z-infra/llama2-chatbot) of their [LLaMA2 Chatbot](https://www.llama2.ai/) to be light-weight for deployment to the [Streamlit Community Cloud](https://streamlit.io/cloud).
 
-[Ollama](https://ollama.com/download)
-
-Then install Streamlit using the following command in the terminal:
+## Prerequisite libraries
 
 ```
-pip install streamlit langchain
+streamlit
+replicate
 ```
 
-Step 2: Running the script
+## Getting your own Replicate API token
 
-Download the script from this Repository using the "Code" button.
+To use this app, you'll need to get your own [Replicate](https://replicate.com/) API token.
 
-Then extract the file to your computer.
+After signing up to Replicate, you can access your API token from [this page](https://replicate.com/account/api-tokens).
 
-Then open the script using VSCode, and open the VSCode terminal
+## Other Llama 2 models to try
 
-Type the following commands into the terminal:
+As mentioned above, this chatbot implementation uses the [**Llama2-7B**](https://replicate.com/a16z-infra/llama7b-v2-chat) model that was trained on 7 billion parameters.
 
-```
-cd StudioLLM-main
-python -m venv venv
-ollama run llama3
-streamlit run app.py
-```
+You can also try out the larger models:
+- [Llama2-13B](https://replicate.com/a16z-infra/llama13b-v2-chat)
+- [Llama2-70B](https://replicate.com/replicate/llama70b-v2-chat)
 
-After the steps above, streamlit will start a local server and provide you with a URL at:
-
-```
-http://localhost:11434
-```
-
-Step 3: Open the URL, and have fun!
+## Further Reading
+- [Llama 2 website](https://ai.meta.com/llama/)
+- [Llama 2 technical overview](https://ai.meta.com/resources/models-and-libraries/llama/)
+- [Llama 2 blog](https://ai.meta.com/blog/llama-2/)
+- [Llama 2 research article](https://ai.meta.com/research/publications/llama-2-open-foundation-and-fine-tuned-chat-models/)
+- [Llama 2 GitHub repo](https://github.com/facebookresearch/llama/tree/main)
